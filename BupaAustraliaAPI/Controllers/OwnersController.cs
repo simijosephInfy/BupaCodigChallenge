@@ -16,7 +16,7 @@ public class OwnersController(IOwnersService ownersService) : ControllerBase
         {
             return NotFound("No categorized books found");
         }
-        return Ok(await ownersService.GetBooksCategorizedByAge());
+        return Ok(categorizedBooks);
     }
 
 }
