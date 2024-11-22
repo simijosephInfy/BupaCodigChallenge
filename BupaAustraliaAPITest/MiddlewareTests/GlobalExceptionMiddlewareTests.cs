@@ -46,5 +46,27 @@ public class GlobalExceptionMiddlewareTests
         // Assert
         Assert.That(context.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
     }
+
+    [Test]
+    public async Task InvokeAsync_WhenAggregateExceptionThrown_ReturnsInternalServerError()
+    {
+        // Arrange
+        var innerException = new Exception("Inner exception");
+        var aggregateException = new AggregateException("Test aggregate exception", innerException);
+        nextMock.Setup(next => next(It.IsAny<HttpContext>())).ThrowsAsync(aggregateException);
+        var bodyStream = new MemoryStream();
+        context.Response.Body = bodyStream;
+
+        // Act
+        await middleware.InvokeAsync(context, nextMock.Object);
+
+        // Assert
+        Assert.That(context.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+        bodyStream.Seek(0, System.IO.SeekOrigin.Begin);
+        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(bodyStream);
+        Assert.That(problemDetails.Title, Is.EqualTo("Server Error"));
+        Assert.That(problemDetails.Status, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+        Assert.That(problemDetails.Detail, Does.StartWith("Test aggregate exception"));
+    }
 }
 
