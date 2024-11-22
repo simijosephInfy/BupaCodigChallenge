@@ -13,7 +13,8 @@ public class OwnersService(IExternalApiService externalApiService) : IOwnersServ
     }
     public Task<IEnumerable<CategorizedBooks>> CategorizeBookByAge(IEnumerable<Owner> owners)
     {
-        var result = owners
+        var result = owners?
+            .Where(owner => owner.Books != null)
             .SelectMany(owner => owner.Books.Select(book => new
             {
                 AgeCategory = owner.Age < 18 ? "Child" : "Adult",
@@ -31,7 +32,7 @@ public class OwnersService(IExternalApiService externalApiService) : IOwnersServ
                 Book = group.Select(x => x.BookDetails).OrderBy(book => book.BookName).ToList()
             });
 
-        return Task.FromResult(result.AsEnumerable());
+        return Task.FromResult(result ?? Enumerable.Empty<CategorizedBooks>());
     }
 
 }
