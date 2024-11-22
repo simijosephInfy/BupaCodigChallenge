@@ -84,7 +84,62 @@ public class ExternalApiServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Empty);
     }
+    [Test]
+    public async Task GetBooksCategorizedByAge_ReturnsEmptyList_OnEmptyJsonResponse()
+    {
+        // Arrange
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("[]")
+        };
 
+        httpMessageHandlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await externalApiService.GetBooksCategorizedByAge();
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.Empty);
+    }
+    [Test]
+    public void GetBooksCategorizedByAge_ThrowsException_OnMalformedJsonResponse()
+    {
+        // Arrange
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{ malformed json }")
+        };
+
+        httpMessageHandlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act & Assert
+        Assert.That(async () => await externalApiService.GetBooksCategorizedByAge(), Throws.Exception.TypeOf<JsonException>());
+    }
+    [Test]
+    public void GetBooksCategorizedByAge_ThrowsException_OnTimeout()
+    {
+        // Arrange
+        httpMessageHandlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ThrowsAsync(new TaskCanceledException("Request timed out"));
+
+        // Act & Assert
+        Assert.That(async () => await externalApiService.GetBooksCategorizedByAge(), Throws.Exception.TypeOf<TaskCanceledException>().With.Message.EqualTo("Request timed out"));
+    }
     [Test]
     public void GetBooksCategorizedByAge_ThrowsException_OnHttpRequestException()
     {
