@@ -41,7 +41,7 @@ public class OwnerControllerTests
             }
         }
         };
-        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge(false))
             .ReturnsAsync(categorizedBooks);
         //Act
         var result = await ownerController.GetBooksCategorizedByAge();
@@ -74,7 +74,7 @@ public class OwnerControllerTests
             }
         }
     };
-        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge(false))
                         .ReturnsAsync(categorizedBooks);
 
         // Act
@@ -107,7 +107,7 @@ public class OwnerControllerTests
     [Test]
     public async Task GetBooksCategorizedByAge_ReturnsNotFound_WhenNoData()
     {
-        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge(false))
             .ReturnsAsync(new List<CategorizedBooks>());
         //Act
         var result = await ownerController.GetBooksCategorizedByAge();
@@ -120,7 +120,7 @@ public class OwnerControllerTests
     [Test]
     public async Task GetBooksCategorizedByAge_ReturnsNotFound_WhenReturnsNull()
     {
-        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge(false))
                           .ReturnsAsync((IEnumerable<CategorizedBooks>)null);
         //Act
         var result = await ownerController.GetBooksCategorizedByAge();
@@ -132,7 +132,7 @@ public class OwnerControllerTests
     }
     public async Task GetBooksCategorizedByAge_ReturnsNotFound_WhenReturnsEmpty()
     {
-        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+        ownerServiceMock.Setup(service => service.GetBooksCategorizedByAge(false))
                           .ReturnsAsync(Enumerable.Empty<CategorizedBooks>);
         //Act
         var result = await ownerController.GetBooksCategorizedByAge();
