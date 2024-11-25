@@ -28,7 +28,7 @@ public class OwnersServiceTests
             Age = 10,
             Books = new List<Book>
             {
-                new Book { Name = "Book1", Type = "Type1" }
+                new Book { Name = "Book1", Type = "Hardcover" }
             }
         }
     };
@@ -37,7 +37,7 @@ public class OwnersServiceTests
             .ReturnsAsync(owners);
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -58,7 +58,7 @@ public class OwnersServiceTests
                 Age = 10,
                 Books = new List<Book>
                 {
-                    new Book { Name = "Book1", Type = "Type1" }
+                    new Book { Name = "Book1", Type = "Hardcover" }
                 }
             },
             new Owner
@@ -67,7 +67,7 @@ public class OwnersServiceTests
                 Age = 20,
                 Books = new List<Book>
                 {
-                    new Book { Name = "Book2", Type = "Type2" }
+                    new Book { Name = "Book2", Type = "Paperback" }
                 }
             }
         };
@@ -76,7 +76,7 @@ public class OwnersServiceTests
                                .ReturnsAsync(owners);
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -84,7 +84,44 @@ public class OwnersServiceTests
         Assert.That(result.Any(c => c.AgeCategory == "Child"), Is.True);
         Assert.That(result.Any(c => c.AgeCategory == "Adult"), Is.True);
     }
+    [Test]
+    public async Task GetBooksCategorizedByAge_FilterBooksCorrectly_ForMixedAgeCategories()
+    {
+        // Arrange
+        var owners = new List<Owner>
+        {
+            new Owner
+            {
+                Name = "Owner1",
+                Age = 10,
+                Books = new List<Book>
+                {
+                    new Book { Name = "Book1", Type = "Hardcover" }
+                }
+            },
+            new Owner
+            {
+                Name = "Owner2",
+                Age = 20,
+                Books = new List<Book>
+                {
+                    new Book { Name = "Book2", Type = "Paperback" }
+                }
+            }
+        };
 
+        _externalApiServiceMock.Setup(service => service.GetBooksCategorizedByAge())
+                               .ReturnsAsync(owners);
+
+        // Act
+        var result = await _ownersService.GetBooksCategorizedByAge(true);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.ToList(), Has.Count.EqualTo(1));
+        Assert.That(result.Any(c => c.AgeCategory == "Child"), Is.True);
+        Assert.That(result.First(c => c.AgeCategory == "Child").Book.Any(b => b.BookType == "Hardcover"), Is.True);
+    }
     [Test]
     public async Task GetBooksCategorizedByAge_ReturnsEmptyList_WhenNoOwners()
     {
@@ -93,7 +130,7 @@ public class OwnersServiceTests
             .ReturnsAsync(new List<Owner>());
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -118,7 +155,7 @@ public class OwnersServiceTests
             .ReturnsAsync(owners);
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -148,7 +185,7 @@ public class OwnersServiceTests
             .ReturnsAsync(owners);
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -172,7 +209,7 @@ public class OwnersServiceTests
                                .ReturnsAsync(owners);
 
         // Act
-        var result = await _ownersService.GetBooksCategorizedByAge();
+        var result = await _ownersService.GetBooksCategorizedByAge(false);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -186,6 +223,6 @@ public class OwnersServiceTests
             .ThrowsAsync(new System.Exception("External API failure"));
 
         // Act & Assert
-        Assert.ThrowsAsync<System.Exception>(async () => await _ownersService.GetBooksCategorizedByAge());
+        Assert.ThrowsAsync<System.Exception>(async () => await _ownersService.GetBooksCategorizedByAge(false));
     }
 }
