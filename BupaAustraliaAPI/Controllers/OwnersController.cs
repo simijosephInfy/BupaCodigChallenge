@@ -13,9 +13,9 @@ public class OwnersController(IOwnersService ownersService) : ControllerBase
     [SwaggerOperation(Summary = "Gets books categorized by age", Description = "Returns a list of books categorized by the owner's age.")]
     [SwaggerResponse(200, "Returns the list of categorized books", typeof(IEnumerable<CategorizedBooks>))]
     [SwaggerResponse(404, "No categorized books found")]
-    public async Task<IActionResult> GetBooksCategorizedByAge()
+    public async Task<IActionResult> GetBooksCategorizedByAge([FromQuery] bool hardcoverOnly = false)
     {
-        var categorizedBooks = await ownersService.GetBooksCategorizedByAge();
+        var categorizedBooks = await ownersService.GetBooksCategorizedByAge(hardcoverOnly);
         if (categorizedBooks == null || !categorizedBooks.Any())
         {
             return NotFound("No categorized books found");
