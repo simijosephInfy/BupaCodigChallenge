@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BupaAustraliaAPI", "BupaAus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BupaAustraliaAPITest", "BupaAustraliaAPITest\BupaAustraliaAPITest.csproj", "{B3E40924-F3AB-44C0-B9D3-0A7B0FB98867}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BupaAustraliaIntegrationTests", "BupaAustraliaIntegrationTests\BupaAustraliaIntegrationTests.csproj", "{69E1950D-94A3-4B9F-BFC4-7EFD66F853BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B3E40924-F3AB-44C0-B9D3-0A7B0FB98867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3E40924-F3AB-44C0-B9D3-0A7B0FB98867}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3E40924-F3AB-44C0-B9D3-0A7B0FB98867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E1950D-94A3-4B9F-BFC4-7EFD66F853BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E1950D-94A3-4B9F-BFC4-7EFD66F853BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E1950D-94A3-4B9F-BFC4-7EFD66F853BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E1950D-94A3-4B9F-BFC4-7EFD66F853BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
